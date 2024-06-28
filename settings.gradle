@@ -1,0 +1,3 @@
+rootProject.name = 'KCP-test'
+include 'app'
+include 'MyPlugin'

@@ -1,0 +1,70 @@
+buildscript {
+    ext {
+        kotlin_version = '2.0.0'
+    }
+
+    repositories {
+        maven {
+            url = "https://www.jitpack.io"
+        }
+        mavenLocal()
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version "$kotlin_version"
+    id 'com.gradle.plugin-publish' version '1.2.1'
+    id "org.jetbrains.kotlin.kapt" version "$kotlin_version"
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    google()
+    maven { url = 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    implementation gradleApi()
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin-api:$kotlin_version") // kotlin-插件 api
+
+    compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable:$kotlin_version")
+    // kotlin-插件 api 注意：如果需要用 com.github.tschuchortdev:kotlin-compile-testing，这里必须使用 embeddable 版本
+
+    compileOnly "com.google.auto.service:auto-service:1.1.1"
+    kapt "com.google.auto.service:auto-service:1.1.1"
+}
+
+// The project version will be used as your plugin version when publishing.
+version = '0.0.1'
+group = 'com.csp'
+
+//java-gradle-plugin插件，会自动再META-INF文件下写入配置文件
+gradlePlugin {
+    plugins {
+        create("MyPlugin") {
+            id = 'com.csp.my-plugin'
+            implementationClass = 'com.csp.plugin.gradle.MyPlugin'
+        }
+    }
+}
+
+publishing {
+    publications {
+        myPlugin(MavenPublication) {
+            from components.java
+            groupId = 'com.csp'
+            artifactId = 'my-plugin'
+            version = '0.0.1'
+        }
+    }
+
+    repositories {
+        mavenLocal()
+    }
+}
