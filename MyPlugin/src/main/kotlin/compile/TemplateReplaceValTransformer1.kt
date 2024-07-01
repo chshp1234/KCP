@@ -154,7 +154,7 @@ class TemplateReplaceValTransformer1(
         ) {
             val `this` = (expression.dispatchReceiver as IrConst<*>).value
             val other = (expression.valueArguments[0] as IrConst<*>).value
-            val res = if (`this` == null || other == null) {
+            if (`this` == null || other == null) {
                 expression
             } else when (expression.symbol.owner.name.asString()) {
                 "plus" -> plusOrDefault(`this`, other, expression)
@@ -171,7 +171,6 @@ class TemplateReplaceValTransformer1(
                 "compareTo" -> compareToOrEqualOrDefault(`this`, other, expression)
                 else -> expression
             }
-            res
         } else expression
     }
 
@@ -738,7 +737,7 @@ class TemplateReplaceValTransformer1(
     fun oneArgConst(expression: IrCall): IrExpression {
         return if (expression.dispatchReceiver is IrConst<*>) {
             val `this` = (expression.dispatchReceiver as IrConst<*>).value
-            val res = if (`this` == null) {
+            if (`this` == null) {
                 expression
             } else when (expression.symbol.owner.name.asString()) {
                 "unaryPlus" -> unaryPlusOrDefault(`this`, expression)
@@ -747,7 +746,6 @@ class TemplateReplaceValTransformer1(
                 "not" -> notOrDefault(`this`, expression)
                 else -> expression
             }
-            res
         } else expression
     }
 
@@ -783,7 +781,7 @@ class TemplateReplaceValTransformer1(
         ) {
             val arg0 = (expression.valueArguments[0] as IrConst<*>).value
             val arg1 = (expression.valueArguments[1] as IrConst<*>).value
-            val res = if (arg0 == null || arg1 == null) {
+            if (arg0 == null || arg1 == null) {
                 expression
             } else when (expression.symbol.owner.name.asString()) {
                 "greaterOrEqual" -> greaterOrEqualOrDefault(arg0, arg1, expression)
@@ -793,7 +791,6 @@ class TemplateReplaceValTransformer1(
                 "lessOrEqual" -> lessOrEqualOrDefault(arg0, arg1, expression)
                 else -> expression
             }
-            res
         } else expression
     }
 
