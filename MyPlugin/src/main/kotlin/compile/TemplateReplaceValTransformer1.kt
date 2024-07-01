@@ -132,10 +132,10 @@ class TemplateReplaceValTransformer1(
                     //有两个参数的计算
                     "plus", "minus", "times", "div", "rem",
                     "and", "or",/* "inv",*/ "xor",
-                    "shl", "shr", "ushr" -> calConst(it)
+                    "shl", "shr", "ushr", "compareTo" -> calConst(it)
 
                     //只有一个参数
-                    "unaryPlus", "unaryMinus", "inv" -> oneArgConst(it)
+                    "unaryPlus", "unaryMinus", "inv", "not" -> oneArgConst(it)
 
                     //比较运算
                     "greaterOrEqual", "greater", "less", "lessOrEqual", "EQEQ" -> compareConst(it)
@@ -168,6 +168,7 @@ class TemplateReplaceValTransformer1(
                 "shl" -> shlOrDefault(`this`, other, expression)
                 "shr" -> shrOrDefault(`this`, other, expression)
                 "ushr" -> ushrOrDefault(`this`, other, expression)
+                "compareTo" -> compareToOrEqualOrDefault(`this`, other, expression)
                 else -> expression
             }
             res
@@ -526,6 +527,11 @@ class TemplateReplaceValTransformer1(
                 else -> default
             }
 
+            is Boolean -> when (other) {
+                is Boolean -> (`this` and other).toIrConst(pluginContext.irBuiltIns.booleanType)
+                else -> default
+            }
+
             else -> default
         }
     }
@@ -552,6 +558,11 @@ class TemplateReplaceValTransformer1(
                 else -> default
             }
 
+            is Boolean -> when (other) {
+                is Boolean -> (`this` or other).toIrConst(pluginContext.irBuiltIns.booleanType)
+                else -> default
+            }
+
             else -> default
         }
     }
@@ -562,6 +573,13 @@ class TemplateReplaceValTransformer1(
             is Short -> (`this`.inv()).toIrConst(pluginContext.irBuiltIns.shortType)
             is Int -> (`this`.inv()).toIrConst(pluginContext.irBuiltIns.intType)
             is Long -> (`this`.inv()).toIrConst(pluginContext.irBuiltIns.longType)
+            else -> default
+        }
+    }
+
+    fun notOrDefault(`this`: Any, default: IrExpression): IrExpression {
+        return when (`this`) {
+            is Boolean -> (`this`.not()).toIrConst(pluginContext.irBuiltIns.booleanType)
             else -> default
         }
     }
@@ -585,6 +603,11 @@ class TemplateReplaceValTransformer1(
 
             is Long -> when (other) {
                 is Long -> (`this` xor other).toIrConst(pluginContext.irBuiltIns.longType)
+                else -> default
+            }
+
+            is Boolean -> when (other) {
+                is Boolean -> (`this` xor other).toIrConst(pluginContext.irBuiltIns.booleanType)
                 else -> default
             }
 
@@ -640,6 +663,77 @@ class TemplateReplaceValTransformer1(
         }
     }
 
+    fun compareToOrEqualOrDefault(`this`: Any, other: Any, default: IrExpression): IrExpression {
+        return when (`this`) {
+            is Byte -> when (other) {
+                is Byte -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Short -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Int -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Long -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Float -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Double -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                else -> default
+            }
+
+            is Short -> when (other) {
+                is Byte -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Short -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Int -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Long -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Float -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Double -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                else -> default
+            }
+
+            is Int -> when (other) {
+                is Byte -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Short -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Int -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Long -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Float -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Double -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                else -> default
+            }
+
+            is Long -> when (other) {
+                is Byte -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Short -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Int -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Long -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Float -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Double -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                else -> default
+            }
+
+            is Float -> when (other) {
+                is Byte -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Short -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Int -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Long -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Float -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Double -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                else -> default
+            }
+
+            is Double -> when (other) {
+                is Byte -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Short -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Int -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Long -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Float -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                is Double -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                else -> default
+            }
+
+            is Boolean -> when (other) {
+                is Boolean -> (`this`.compareTo(other)).toIrConst(pluginContext.irBuiltIns.intType)
+                else -> default
+            }
+
+            else -> default
+        }
+    }
+
     @OptIn(UnsafeDuringIrConstructionAPI::class)
     fun oneArgConst(expression: IrCall): IrExpression {
         return if (expression.dispatchReceiver is IrConst<*>) {
@@ -650,6 +744,7 @@ class TemplateReplaceValTransformer1(
                 "unaryPlus" -> unaryPlusOrDefault(`this`, expression)
                 "unaryMinus" -> unaryMinusOrDefault(`this`, expression)
                 "inv" -> invOrDefault(`this`, expression)
+                "not" -> notOrDefault(`this`, expression)
                 else -> expression
             }
             res
@@ -764,6 +859,11 @@ class TemplateReplaceValTransformer1(
                 else -> default
             }
 
+            is Boolean -> when (other) {
+                is Boolean -> (`this` >= other).toIrConst(pluginContext.irBuiltIns.booleanType)
+                else -> default
+            }
+
             else -> default
         }
     }
@@ -830,6 +930,11 @@ class TemplateReplaceValTransformer1(
                 else -> default
             }
 
+            is Boolean -> when (other) {
+                is Boolean -> (`this` > other).toIrConst(pluginContext.irBuiltIns.booleanType)
+                else -> default
+            }
+
             else -> default
         }
     }
@@ -863,6 +968,11 @@ class TemplateReplaceValTransformer1(
 
             is Double -> when (other) {
                 is Double -> (`this` == other).toIrConst(pluginContext.irBuiltIns.booleanType)
+                else -> default
+            }
+
+            is Boolean -> when (other) {
+                is Boolean -> (`this` == other).toIrConst(pluginContext.irBuiltIns.booleanType)
                 else -> default
             }
 
@@ -932,6 +1042,11 @@ class TemplateReplaceValTransformer1(
                 else -> default
             }
 
+            is Boolean -> when (other) {
+                is Boolean -> (`this` < other).toIrConst(pluginContext.irBuiltIns.booleanType)
+                else -> default
+            }
+
             else -> default
         }
     }
@@ -995,6 +1110,11 @@ class TemplateReplaceValTransformer1(
                 is Long -> (`this` <= other).toIrConst(pluginContext.irBuiltIns.booleanType)
                 is Float -> (`this` <= other).toIrConst(pluginContext.irBuiltIns.booleanType)
                 is Double -> (`this` <= other).toIrConst(pluginContext.irBuiltIns.booleanType)
+                else -> default
+            }
+
+            is Boolean -> when (other) {
+                is Boolean -> (`this` <= other).toIrConst(pluginContext.irBuiltIns.booleanType)
                 else -> default
             }
 

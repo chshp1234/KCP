@@ -80,6 +80,7 @@ fun testOperator() {
     val p = z or 2
     val q = z.inv()
     val r = z xor 2
+    val v = z.compareTo(1)
 
     var s = 1
     s -= 2
@@ -90,4 +91,17 @@ fun testOperator() {
     val t = s++
     val u = s--
 
+}
+
+fun testBoolOp() {
+    val b = true
+    val c = b and false
+    val d = b or false
+    val e = b.not()
+    val f = b xor false
+    val g = b == true
+    val h = b > true
+    val i = b >= true
+    val j = b < true
+    val k = b <= true
 }

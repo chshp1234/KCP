@@ -1,8 +1,17 @@
 package com.csp.demo
 
+import org.junit.jupiter.api.Test
 import kotlin.concurrent.thread
 
-fun testVal() {
+class LocalValTest() {
+
+    @Test
+    fun test() {
+        testBoolVal()
+    }
+}
+
+fun testPrimitiveVal() {
     val a = 1
     val b = 3
 
@@ -13,6 +22,29 @@ fun testVal() {
     println(a)
     println(c)
     println(d)
+}
+
+fun testBoolVal() {
+    val b = true
+    val c = b and false
+    val d = b or false
+    val e = b.not()
+    val f = b xor false
+    val g = b == true
+    val h = b > true
+    val i = b >= true
+    val j = b < true
+    val k = b <= true
+    println(b)
+    println(c)
+    println(d)
+    println(e)
+    println(f)
+    println(g)
+    println(h)
+    println(i)
+    println(j)
+    println(k)
 }
 
 fun testPrint() {
